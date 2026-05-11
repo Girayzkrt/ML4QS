@@ -44,12 +44,12 @@ class NonHierarchicalClustering:
 
     # Define the gowers distance between arrays to be used in k-means and k-medoids.
     def gowers_similarity(self, X, Y=None, Y_norm_squared=None, squared=False):
-        X = np.matrix(X)
+        X = np.asarray(X)
         distances = np.zeros(shape=(X.shape[0], Y.shape[0]))
         DM = InstanceDistanceMetrics()
         # Pairs up the elements in the dataset
         for x_row in range(0, X.shape[0]):
-            data_row1 = pd.DataFrame(X[x_row])
+            data_row1 = pd.DataFrame(X[x_row].reshape(1, -1))
             for y_row in range(0, Y.shape[0]):
                 data_row2 = pd.DataFrame(Y[y_row]).transpose()
                 # And computer the distance as defined in our distance metrics class.

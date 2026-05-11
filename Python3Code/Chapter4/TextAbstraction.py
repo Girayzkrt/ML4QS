@@ -114,7 +114,7 @@ class TextAbstraction:
             # Store the current set of n-grams found.
             word_attributes = list(current_set | new_set)
             # And add the found list of words to the table.
-            data_table.set_value(i, self.col_name, n_grams)
+            data_table.iloc[i, data_table.columns.get_loc(self.col_name)] = n_grams
 
         return data_table, word_attributes
 

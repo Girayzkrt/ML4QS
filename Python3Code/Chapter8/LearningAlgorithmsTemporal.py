@@ -49,7 +49,7 @@ class TemporalClassificationAlgorithms:
 
         # Combine the two datasets as we want to include all possible values
         # for the categorical attribute.
-        total_dataset = train.append(test)
+        total_dataset = pd.concat([train, test])
 
         # Convert and split up again.
         total_dataset = pd.get_dummies(pd.DataFrame(total_dataset), prefix='', prefix_sep='')
@@ -183,7 +183,7 @@ class TemporalClassificationAlgorithms:
 
     def normalize(self, train, test, range_min, range_max):
 
-        total = copy.deepcopy(train).append(test, ignore_index=True)
+        total = pd.concat([copy.deepcopy(train), test], ignore_index=True)
 
         max = total.max()
         min = total.min()

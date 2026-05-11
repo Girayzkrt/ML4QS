@@ -1,5 +1,3 @@
-from util.util import get_chapter
-
 import matplotlib.colors as cl
 import matplotlib.pyplot as plt
 import matplotlib.dates as md
@@ -18,7 +16,6 @@ import sys
 from pathlib import Path
 import dateutil
 import matplotlib as mpl
-mpl.use('tkagg')
 
 class VisualizeDataset:
 
@@ -153,8 +150,8 @@ class VisualizeDataset:
     # Plot outliers in case of a binary outlier score. Here, the col specifies the real data
     # column and outlier_col the columns with a binary value (outlier or not)
     def plot_binary_outliers(self, data_table, col, outlier_col):
-        data_table.loc[:,:] = data_table.dropna(axis=0, subset=[col, outlier_col])
-        data_table.loc[:,outlier_col] = data_table[outlier_col].astype('bool')
+        data_table = data_table.dropna(axis=0, subset=[col, outlier_col])
+        data_table[outlier_col] = data_table[outlier_col].astype('bool')
         f, xar = plt.subplots()
         xfmt = md.DateFormatter('%H:%M')
         xar.xaxis.set_major_formatter(xfmt)
