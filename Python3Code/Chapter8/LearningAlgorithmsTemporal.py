@@ -28,7 +28,7 @@ from Chapter7.Evaluation import RegressionEvaluation
 import sys
 import matplotlib.pyplot as plot
 import pyflux as pf
-from statsmodels.tsa.arima_model import ARIMA
+from statsmodels.tsa.arima_model import ARIMA  # statsmodels <0.13 only
 
 
 

@@ -23,7 +23,7 @@ import random
 from mpl_toolkits.mplot3d import Axes3D
 from pandas.plotting import autocorrelation_plot
 from statsmodels.tsa.stattools import pacf
-from statsmodels.tsa.arima_model import ARIMA
+from statsmodels.tsa.arima_model import ARIMA  # statsmodels <0.13 only
 import pyflux as pf
 from statsmodels.tsa.seasonal import seasonal_decompose
 import statsmodels

@@ -150,7 +150,7 @@ class VisualizeDataset:
     # Plot outliers in case of a binary outlier score. Here, the col specifies the real data
     # column and outlier_col the columns with a binary value (outlier or not)
     def plot_binary_outliers(self, data_table, col, outlier_col):
-        data_table = data_table.dropna(axis=0, subset=[col, outlier_col])
+        data_table = data_table.dropna(axis=0, subset=[col, outlier_col]).copy()
         data_table[outlier_col] = data_table[outlier_col].astype('bool')
         f, xar = plt.subplots()
         xfmt = md.DateFormatter('%H:%M')

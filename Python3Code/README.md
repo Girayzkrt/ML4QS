@@ -21,36 +21,29 @@ conda activate myenv
 
 Then, navigate back to the Python3Code folder using cd <path to your ML4QS/Python3Code folder>.
 
-Run the following commands to install the required dependencies:
+Run the following command to install the required dependencies:
 
 ```bash
 pip3 install -r requirements.txt 
 ```
 
-```bash
-pip3 install -r requirements_git.txt 
-```
-It could be the case that you run into an error when installing pybrain/pyflux. Two possible solutions are given here:
-1. An error stating: '... error microsoft visual c++ 14.0 or greater is required'. In this case, you need to install Visual Studio Build Tools via the following link: https://visualstudio.microsoft.com/visual-cpp-build-tools/ . Once installed, you need to open it, click on modify and mark 'Desktop development with C++'. Afterwards, you might need to reboot. More information can be found via: https://docs.microsoft.com/en-us/answers/questions/136595/error-microsoft-visual-c-140-or-greater-is-require.html.
+Note that pyflux cannot be built from source on Windows, so please use the pre-built wheel included in this repository instead of running `pip3 install -r requirements_git.txt` directly. Check your Windows version (32-bit or 64-bit) [here](https://support.microsoft.com/en-us/windows/32-bit-and-64-bit-windows-frequently-asked-questions-c6ca9541-8dce-4d48-0415-94a3faa2e13d) and run the matching command:
 
-2. If there is a different pyflux error, installing pyflux via a wheel might help. 
-Download a pyflux wheel (based on your python version and desktop) and pip install it 
-in the current working directory. Follow the steps to perform.\
-Step 1:
-Download the pyflux wheel file from this Github repository via the folder pyflux_wheel. There are two files in this folder.
-We work with python 3.8.8 so therefor the number 38 is in the file. You either pick the 32 or 64 file.
-Check your desktop settings (64 or 32). You can check that [here](https://support.microsoft.com/en-us/windows/32-bit-and-64-bit-windows-frequently-asked-questions-c6ca9541-8dce-4d48-0415-94a3faa2e13d)  \
-Step 2:
-Put the wheel file in the current working directory \
-Step 3:
-Install the wheel with the following command:
 ```bash
-pip install pyflux‑0.4.17‑cp38‑cp38‑win_amd64.whl
+pip install pyflux_wheel/pyflux-0.4.17-cp38-cp38-win_amd64.whl
 ```
-Or if you have a 32 desktop: 
+Or if you have a 32-bit system:
 ```bash
-pip install pyflux‑0.4.17‑cp38‑cp38‑win32.whl
+pip install pyflux_wheel/pyflux-0.4.17-cp38-cp38-win32.whl
 ```
+
+Then install pybrain by running:
+```bash
+pip install git+https://github.com/pybrain/pybrain
+```
+
+It could be the case that pybrain fails with a Visual C++ error. In this case, you need to install Visual Studio Build Tools via the following link: https://visualstudio.microsoft.com/visual-cpp-build-tools/ . Once installed, you need to open it, click on modify and mark 'Desktop development with C++'. Afterwards, you might need to reboot.
+
 ## Mac/Linux:
 
 Open the terminal
