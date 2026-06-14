@@ -68,6 +68,8 @@ for milliseconds_per_instance in GRANULARITIES:
     dataset['label'] = 'unknown'
     dataset.loc[dataset['labelcycling'] == 1, 'label'] = 'cycling'
     dataset.loc[dataset['labelwalking'] == 1, 'label'] = 'walking'
+    dataset.loc[dataset['labeltram'] == 1, 'label'] = 'tram'
+    
 
     util.print_statistics(dataset)
     datasets.append(copy.deepcopy(dataset))
