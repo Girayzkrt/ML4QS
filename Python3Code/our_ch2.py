@@ -66,10 +66,9 @@ for milliseconds_per_instance in GRANULARITIES:
 
     # Derive a label column for easy grouping
     dataset['label'] = 'unknown'
-    dataset.loc[dataset['labelcycling'] == 1, 'label'] = 'cycling'
-    dataset.loc[dataset['labelwalking'] == 1, 'label'] = 'walking'
-    dataset.loc[dataset['labeltram'] == 1, 'label'] = 'tram'
-    
+    for col in [c for c in dataset.columns if c.startswith('label') and c != 'label']:
+        mode = col[len('label'):]
+        dataset.loc[dataset[col] == 1, 'label'] = mode
 
     util.print_statistics(dataset)
     datasets.append(copy.deepcopy(dataset))

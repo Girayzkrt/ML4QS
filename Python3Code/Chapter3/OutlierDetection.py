@@ -43,11 +43,14 @@ class DistributionBasedOutlierDetection:
 
         # Pass all rows in the dataset.
         for i in range(0, len(data_table.index)):
+            # Use positional indexing (.iloc) because the data_table index may be datetime-based
+            hi = high.iloc[i]
+            lo = low.iloc[i]
             # Determine the probability of observing the point
-            prob.append(
-                1.0 - 0.5 * (scipy.special.erf(high[i]) - scipy.special.erf(low[i])))
+            p = 1.0 - 0.5 * (scipy.special.erf(hi) - scipy.special.erf(lo))
+            prob.append(p)
             # And mark as an outlier when the probability is below our criterion.
-            mask.append(prob[i] < criterion)
+            mask.append(p < criterion)
         data_table[col + '_outlier'] = mask
         return data_table
 

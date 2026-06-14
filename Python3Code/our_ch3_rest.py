@@ -137,8 +137,9 @@ def main():
 
         # --- Figure 3: Final processed dataset overview (one session per mode) ---
         dataset['label'] = 'unknown'
-        dataset.loc[dataset['labelcycling'] == 1, 'label'] = 'cycling'
-        dataset.loc[dataset['labelwalking'] == 1, 'label'] = 'walking'
+        for col in [c for c in dataset.columns if c.startswith('label') and c != 'label']:
+            mode = col[len('label'):]
+            dataset.loc[dataset[col] == 1, 'label'] = mode
         modes = [m for m in dataset['label'].unique() if m != 'unknown']
 
         fig, axes = plt.subplots(len(modes), 1, figsize=(12, 4 * len(modes)), sharex=False)
