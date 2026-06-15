@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
-from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import (classification_report, confusion_matrix,
                               ConfusionMatrixDisplay, f1_score)
 
@@ -101,7 +101,7 @@ class SensorWindowDataset(Dataset):
 
 
 class CNN1D(nn.Module):
-    def __init__(self, n_channels, n_classes, window_size):
+    def __init__(self, n_channels, n_classes):
         super().__init__()
         self.features = nn.Sequential(
             nn.Conv1d(n_channels, 64, kernel_size=5, padding=2),
@@ -172,7 +172,12 @@ def predict(model, X_np):
 
 def train_model(model, train_loader, val_X, val_y, label_encoder,
                 n_epochs=50, lr=1e-3, patience=10):
-    """Train a PyTorch model with early stopping on validation F1."""
+    """Train a PyTorch model, optionally with early stopping on validation F1.
+
+    When ``patience`` is ``None``, training runs for all ``n_epochs`` without
+    consulting the validation data, which prevents test-data leakage when the
+    caller passes the test set as ``val_X``/``val_y``.
+    """
     model = model.to(DEVICE)
     optimizer = torch.optim.Adam(model.parameters(), lr=lr)
     criterion = nn.CrossEntropyLoss()
@@ -192,6 +197,10 @@ def train_model(model, train_loader, val_X, val_y, label_encoder,
             loss.backward()
             optimizer.step()
             total_loss += loss.item() * len(batch_X)
+
+        if patience is None:
+            # No early stopping — skip validation entirely.
+            continue
 
         # Validation
         val_pred, _ = predict(model, val_X)
@@ -252,7 +261,7 @@ def leave_one_session_out_cv(X, y, sessions, label_encoder, window_size,
         print(f'  LOSO fold {i+1}/{len(unique_sessions)}: test={held_out} ({test_mask.sum()} windows)')
 
         models = {
-            'CNN': CNN1D(n_channels, n_classes, window_size),
+            'CNN': CNN1D(n_channels, n_classes),
             'LSTM': LSTMClassifier(n_channels, n_classes),
         }
 
@@ -351,6 +360,14 @@ def split_by_session(sessions, y, test_fraction=0.3, random_state=42):
         test_sessions.extend(sess_list[:n_test])
         train_sessions.extend(sess_list[n_test:])
 
+    train_labels_present = set()
+    for s in train_sessions:
+        train_labels_present.add(session_label[s])
+    for lbl in label_to_sessions:
+        if lbl not in train_labels_present:
+            print(f'WARNING: label "{lbl}" has no sessions in train set — '
+                  f'all {len(label_to_sessions[lbl])} session(s) are in test!')
+
     print(f'Train sessions ({len(train_sessions)}): {sorted(train_sessions)}')
     print(f'Test sessions  ({len(test_sessions)}):  {sorted(test_sessions)}')
 
@@ -429,14 +446,11 @@ def main():
     for name, model_cls in [('CNN', CNN1D), ('LSTM', LSTMClassifier)]:
         print(f'\n--- Training {name} ---')
 
-        if name == 'CNN':
-            model = model_cls(n_channels, n_classes, window_size)
-        else:
-            model = model_cls(n_channels, n_classes)
+        model = model_cls(n_channels, n_classes)
 
         model, best_val_f1 = train_model(
             model, train_loader, test_X, test_y, label_encoder,
-            n_epochs=FLAGS.epochs, lr=FLAGS.lr)
+            n_epochs=FLAGS.epochs, lr=FLAGS.lr, patience=None)
 
         pred_idx, pred_probs = predict(model, test_X)
         pred_labels = label_encoder.inverse_transform(pred_idx)
