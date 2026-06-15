@@ -165,10 +165,20 @@ for milliseconds_per_instance in GRANULARITIES:
 
     for mode in modes:
         mode_data = dataset[dataset['label'] == mode]
-        first_session = mode_data['session'].dropna().unique()[0]
+        if mode_data.empty:
+            print(f'Warning: no data for mode {mode} in acc_x FFT')
+            continue
+        sessions_present = mode_data['session'].dropna().unique()
+        if len(sessions_present) == 0:
+            print(f'Warning: no session labels for mode {mode} in acc_x FFT')
+            continue
+        first_session = sessions_present[0]
         seg = mode_data[mode_data['session'] == first_session]
         signal = seg['acc_x'].dropna().values
         N = len(signal)
+        if N == 0:
+            print(f'Warning: no acc_x signal for mode {mode} in session {first_session}')
+            continue
         freqs = rfftfreq(N, d=1.0 / fs)
         amplitudes = np.abs(rfft(signal)) * 2.0 / N
         axes[0].plot(freqs, amplitudes, label=mode, alpha=0.8)
@@ -181,10 +191,20 @@ for milliseconds_per_instance in GRANULARITIES:
 
     for mode in modes:
         mode_data = dataset[dataset['label'] == mode]
-        first_session = mode_data['session'].dropna().unique()[0]
+        if mode_data.empty:
+            print(f'Warning: no data for mode {mode} in gyr_x FFT')
+            continue
+        sessions_present = mode_data['session'].dropna().unique()
+        if len(sessions_present) == 0:
+            print(f'Warning: no session labels for mode {mode} in gyr_x FFT')
+            continue
+        first_session = sessions_present[0]
         seg = mode_data[mode_data['session'] == first_session]
         signal = seg['gyr_x'].dropna().values
         N = len(signal)
+        if N == 0:
+            print(f'Warning: no gyr_x signal for mode {mode} in session {first_session}')
+            continue
         freqs = rfftfreq(N, d=1.0 / fs)
         amplitudes = np.abs(rfft(signal)) * 2.0 / N
         axes[1].plot(freqs, amplitudes, label=mode, alpha=0.8)

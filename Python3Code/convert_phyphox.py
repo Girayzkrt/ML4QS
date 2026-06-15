@@ -15,17 +15,26 @@ DATA_PATH = Path(__file__).parent / 'data'
 OUTPUT_PATH = Path(__file__).parent / 'datasets' / 'our_data'
 
 SENSOR_FILES = {
-    'Linear Accelerometer.csv': {
+    ('Linear Accelerometer.csv', 'Accelerometer.csv'): {
         'output': 'accelerometer.csv',
-        'rename': {'X (m/s^2)': 'x', 'Y (m/s^2)': 'y', 'Z (m/s^2)': 'z'},
+        'rename': {
+            'X (m/s^2)': 'x', 'Y (m/s^2)': 'y', 'Z (m/s^2)': 'z',
+            'Acceleration x (m/s^2)': 'x', 'Acceleration y (m/s^2)': 'y', 'Acceleration z (m/s^2)': 'z',
+        },
     },
-    'Gyroscope.csv': {
+    ('Gyroscope.csv',): {
         'output': 'gyroscope.csv',
-        'rename': {'X (rad/s)': 'x', 'Y (rad/s)': 'y', 'Z (rad/s)': 'z'},
+        'rename': {
+            'X (rad/s)': 'x', 'Y (rad/s)': 'y', 'Z (rad/s)': 'z',
+            'Gyroscope x (rad/s)': 'x', 'Gyroscope y (rad/s)': 'y', 'Gyroscope z (rad/s)': 'z',
+        },
     },
-    'Barometer.csv': {
+    ('Barometer.csv', 'Pressure.csv'): {
         'output': 'barometer.csv',
-        'rename': {'X (hPa)': 'pressure'},
+        'rename': {
+            'X (hPa)': 'pressure',
+            'Pressure (hPa)': 'pressure',
+        },
     },
 }
 
@@ -47,9 +56,14 @@ def get_start_time(session_path):
     return pd.Timestamp(epoch_s, unit='s')
 
 
-def convert_sensor(session_path, sensor_file, rename_map, start_time):
-    filepath = session_path / sensor_file
-    if not filepath.exists():
+def convert_sensor(session_path, sensor_files, rename_map, start_time):
+    filepath = None
+    for sensor_file in sensor_files:
+        candidate = session_path / sensor_file
+        if candidate.exists():
+            filepath = candidate
+            break
+    if filepath is None:
         return None
 
     df = pd.read_csv(filepath)
