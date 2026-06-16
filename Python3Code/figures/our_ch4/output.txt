@@ -1,0 +1,21 @@
+# our_ch4.py — 2026-06-16 14:13:34
+
+
+=== Chapter 4 feature engineering summary ===
+Sampling rate: 4.00 Hz
+Frequency window: 40 samples
+Downsampling step after overlap reduction: 20 rows
+Rows after feature engineering: 717
+Total feature columns: 313
+Temporal feature columns: 110
+Frequency feature columns: 192
+
+Label counts after overlap reduction:
+  labelcycling: 102
+  labelmetro: 102
+  labeltram: 137
+  labelwalking: 308
+  labelbus: 68
+
+Saved to /Users/vewq/ML4QS/Python3Code/intermediate_datafiles/chapter4_result.csv
+--- 52.0423002243042 seconds ---

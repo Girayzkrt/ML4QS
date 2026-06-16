@@ -1,0 +1,86 @@
+# our_ch8_final.py — 2026-06-16 14:16:42
+
+Dataset shape: (15115, 15)
+Label distribution:
+label
+walking    6477
+tram       2879
+cycling    2160
+metro      2160
+bus        1439
+Device: mps
+
+Windows: 730, Channels: 7, Window length: 40
+Labels: {'bus': 69, 'cycling': 105, 'metro': 105, 'tram': 138, 'walking': 313}
+Sessions: ['giray_cycling_s1' 'giray_cycling_s2' 'giray_cycling_s3' 'giray_metro_s1'
+ 'giray_metro_s2' 'giray_metro_s3' 'giray_tram_s1' 'giray_tram_s2'
+ 'giray_walking_s1' 'giray_walking_s2' 'giray_walking_s3' 'martina_bus_s1'
+ 'martina_bus_s2' 'martina_tram_s1' 'martina_tram_s2' 'martina_walking_s1'
+ 'martina_walking_s2' 'matei_walking_s1' 'matei_walking_s2'
+ 'matei_walking_s4']
+
+======================================================================
+PART 1: Leave-One-Session-Out Cross-Validation
+======================================================================
+  LOSO fold 1/20: test=giray_cycling_s1 (35 windows)
+  LOSO fold 2/20: test=giray_cycling_s2 (35 windows)
+  LOSO fold 3/20: test=giray_cycling_s3 (35 windows)
+  LOSO fold 4/20: test=giray_metro_s1 (35 windows)
+  LOSO fold 5/20: test=giray_metro_s2 (35 windows)
+  LOSO fold 6/20: test=giray_metro_s3 (35 windows)
+  LOSO fold 7/20: test=giray_tram_s1 (35 windows)
+  LOSO fold 8/20: test=giray_tram_s2 (35 windows)
+  LOSO fold 9/20: test=giray_walking_s1 (35 windows)
+  LOSO fold 10/20: test=giray_walking_s2 (35 windows)
+  LOSO fold 11/20: test=giray_walking_s3 (35 windows)
+  LOSO fold 12/20: test=martina_bus_s1 (35 windows)
+  LOSO fold 13/20: test=martina_bus_s2 (34 windows)
+  LOSO fold 14/20: test=martina_tram_s1 (34 windows)
+  LOSO fold 15/20: test=martina_tram_s2 (34 windows)
+  LOSO fold 16/20: test=martina_walking_s1 (34 windows)
+  LOSO fold 17/20: test=martina_walking_s2 (34 windows)
+  LOSO fold 18/20: test=matei_walking_s1 (35 windows)
+  LOSO fold 19/20: test=matei_walking_s2 (34 windows)
+  LOSO fold 20/20: test=matei_walking_s4 (71 windows)
+  CNN: acc=0.740±0.393  f1=0.764±0.387
+  LSTM: acc=0.681±0.448  f1=0.691±0.448
+Saved loso_accuracy
+
+======================================================================
+PART 2: Stratified Session Split — Detailed Evaluation
+======================================================================
+Train sessions (14): ['giray_cycling_s2', 'giray_cycling_s3', 'giray_metro_s1', 'giray_metro_s3', 'giray_tram_s1', 'giray_walking_s1', 'giray_walking_s2', 'giray_walking_s3', 'martina_bus_s2', 'martina_tram_s1', 'martina_tram_s2', 'martina_walking_s2', 'matei_walking_s1', 'matei_walking_s2']
+Test sessions  (6):  ['giray_cycling_s1', 'giray_metro_s2', 'giray_tram_s2', 'martina_bus_s1', 'martina_walking_s1', 'matei_walking_s4']
+Train: 485 windows, Test: 245 windows
+Train labels: {'bus': 34, 'cycling': 70, 'metro': 70, 'tram': 103, 'walking': 208}
+Test labels:  {'bus': 35, 'cycling': 35, 'metro': 35, 'tram': 35, 'walking': 105}
+
+--- Training CNN ---
+  CNN: train=0.996  test=0.420
+
+--- Training LSTM ---
+  LSTM: train=0.977  test=0.388
+
+--------------------------------------------------
+Model     Train Acc   Test Acc
+--------------------------------------------------
+CNN           0.996      0.420
+LSTM          0.977      0.388
+
+=== Classification report (CNN) ===
+              precision    recall  f1-score   support
+
+         bus       0.00      0.00      0.00        35
+     cycling       0.00      0.00      0.00        35
+       metro       1.00      0.97      0.99        35
+        tram       0.48      1.00      0.65        35
+     walking       0.45      0.32      0.38       105
+
+    accuracy                           0.42       245
+   macro avg       0.39      0.46      0.40       245
+weighted avg       0.41      0.42      0.40       245
+
+Saved confusion_matrix_best
+Saved accuracy_comparison
+
+Total runtime: 119.5s

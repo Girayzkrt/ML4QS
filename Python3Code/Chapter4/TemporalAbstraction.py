@@ -58,13 +58,15 @@ class NumericalAbstraction:
 
 
     def abstract_numerical(self, data_table, cols, window_size, aggregation_function_name):
-    
+        import pandas as pd
+
+        new_columns = {}
         for col in cols:
-            
             aggregations = self.aggregate_value(data_table[col], window_size, aggregation_function_name)
-            data_table[col + '_temp_' + aggregation_function_name + '_ws_' + str(window_size)] = aggregations
-      
-        
+            new_columns[col + '_temp_' + aggregation_function_name + '_ws_' + str(window_size)] = aggregations
+
+        data_table = pd.concat([data_table, pd.DataFrame(new_columns, index=data_table.index)], axis=1)
+
         return data_table
 
 # Class to perform categorical abstraction. We obtain patterns of categorical attributes that occur frequently

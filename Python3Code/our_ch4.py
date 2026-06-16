@@ -6,10 +6,12 @@
 #                                                            #
 ##############################################################
 
+import sys
 import argparse
 import copy
 import time
 from pathlib import Path
+from datetime import datetime
 
 import numpy as np
 import pandas as pd
@@ -186,6 +188,42 @@ def main():
     print('--- %s seconds ---' % (time.time() - start_time))
 
 
+FIGURES_DIR = Path('figures') / 'our_ch4'
+
+
+class _Tee:
+    """Write to multiple streams simultaneously."""
+    def __init__(self, *streams):
+        self.streams = streams
+    def write(self, data):
+        for s in self.streams:
+            s.write(data)
+    def flush(self):
+        for s in self.streams:
+            s.flush()
+
+
+def save_output(path):
+    """Context manager that tees stdout to both terminal and a text file."""
+    from contextlib import contextmanager
+
+    @contextmanager
+    def _tee(path):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        f = open(path, 'w')
+        f.write(f'# our_ch4.py — {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}\n\n')
+        old = sys.stdout
+        sys.stdout = _Tee(old, f)
+        try:
+            yield
+        finally:
+            sys.stdout = old
+            f.close()
+            print(f'Output saved to {path}')
+
+    return _tee(path)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
@@ -198,4 +236,5 @@ if __name__ == '__main__':
 
     FLAGS, unparsed = parser.parse_known_args()
 
-    main()
+    with save_output(FIGURES_DIR / 'output.txt'):
+        main()
